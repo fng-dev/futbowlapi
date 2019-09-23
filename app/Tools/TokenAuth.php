@@ -73,7 +73,17 @@ class TokenAuth{
 
         $data = (array) $this->decode($token);
 
-        $client = Client::where('email', $data['email'])->where('password',$data['password'])->get()->first();
+        $client = null;
+
+        //Comprueba se existem las variables $data['email] y $data['password]
+
+        if(isset($data['email']) && isset($data['password'])){
+
+            //Comprueba si hay un usuario con estas credenciales
+
+            $client = Client::where('email', $data['email'])->where('password',$data['password'])->get()->first();
+
+        }
 
         if($client){
 
@@ -81,19 +91,29 @@ class TokenAuth{
 
             $token = $date->format('Y-m-d h:i:s') . $data['email'];
 
+            //Crea un token de acceso
+
             $hash = app('hash')->make($token);
+
+            // Actualiza el token de acceso
 
             $client->token = $hash;
 
+            // Intenta guardar token en el banco
+
             if($client->save()){
+
+                //Si tiene exito, gera el token de acesso
 
                 $response = [
                     "token" => $client->token,
                     "email" => $data['email']
                 ];
 
+                //encripta token
                 $response = $this->encode($response);
 
+                //Devuelve token
                 return $response;
 
             }else{

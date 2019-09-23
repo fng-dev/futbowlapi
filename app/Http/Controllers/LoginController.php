@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use DomainException;
 use App\Tools\TokenAuth;
 use Illuminate\Http\Request;
+use UnexpectedValueException;
 
 class LoginController extends Controller
 {
@@ -20,14 +22,33 @@ class LoginController extends Controller
     public function login(Request $request)
     {
 
-        $token = new TokenAuth();
+        if ($request->header('authentication')) {
 
-        //Comprueba si el login es correcto. En caso afirmativo, devuelve el token de acceso
+            try {
 
-        //Caso no, devuelve "false"
+                $token = new TokenAuth();
 
-        return $token->auth($request->header('authentication'));
+                //Comprueba si el login es correcto. En caso afirmativo, devuelve el token de acceso
 
+                //Caso no, devuelve "false"
+
+                return $token->auth($request->header('authentication'));
+
+
+            } catch (DomainException $e) {
+
+                return response()->json(["status" => "Unauthorized"]);
+
+            } catch (UnexpectedValueException $e) {
+
+                return response()->json(["status" => "Unauthorized"]);
+
+            }
+
+        } else {
+
+            return response()->json(["status" => "Unauthorized"]);
+        }
     }
 
     //

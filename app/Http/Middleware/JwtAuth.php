@@ -24,6 +24,7 @@ class JwtAuth
         if($request->header('authorized')){
 
             try{
+
                 //Llama a la clase TokenAuth
                 $Jwtoken = new TokenAuth();
 
@@ -34,22 +35,22 @@ class JwtAuth
                 //Si no, devuelve "Unauthorized"
 
                 if(!$client){
-                    return "Unauthorized";
+                    return response()->json(["status" => "Unauthorized"]);
                 }
 
             }catch(DomainException $e){
 
-                return "Unauthorized";
+                return response()->json(["status" => "Unauthorized"]);
 
             }catch(UnexpectedValueException $e){
 
-                return "Unauthorized";
+                return response()->json(["status" => "Unauthorized"]);
 
             }
 
         }else{
 
-            return "Unauthorized";
+            return response()->json(["status" => "Unauthorized"]);
 
         }
 

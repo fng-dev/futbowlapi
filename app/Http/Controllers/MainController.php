@@ -16,6 +16,6 @@ class MainController extends Controller
 
     public function index()
     {
-        echo "Autorizado";
+        return response()->json(["status" => "Autorizado"]);
     }
 }
